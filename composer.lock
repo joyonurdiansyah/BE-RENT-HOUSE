@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7a67fcae2071fa5e779ba60225e8839b",
+    "content-hash": "4cf9be3044b7305fd3a5ae501c4c6d38",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -597,6 +597,68 @@
                 "source": "https://github.com/dflydev/dflydev-dot-access-data/tree/v3.0.3"
             },
             "time": "2024-07-08T12:26:09+00:00"
+        },
+        {
+            "name": "directorytree/metrics",
+            "version": "v1.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/DirectoryTree/Metrics.git",
+                "reference": "9b32efd5a2c1215bcb318190042e65cdcd8aaa3a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/DirectoryTree/Metrics/zipball/9b32efd5a2c1215bcb318190042e65cdcd8aaa3a",
+                "reference": "9b32efd5a2c1215bcb318190042e65cdcd8aaa3a",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/collections": "^9.0|^10.0|^11.0|^12.0",
+                "illuminate/database": "^9.0|^10.0|^11.0|^12.0",
+                "illuminate/redis": "^9.0|^10.0|^11.0|^12.0",
+                "illuminate/support": "^9.0|^10.0|^11.0|^12.0"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.0",
+                "orchestra/testbench": "^7.0|^8.0|^9.0|^10.0",
+                "pestphp/pest": "^1.0|^2.0|^3.0",
+                "pestphp/pest-plugin-laravel": "^1.0|^2.0|^3.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "Metrics": "DirectoryTree\\Metrics\\Facades\\Metrics"
+                    },
+                    "providers": [
+                        "DirectoryTree\\Metrics\\MetricServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/helpers.php"
+                ],
+                "psr-4": {
+                    "DirectoryTree\\Metrics\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Steve Bauman",
+                    "email": "steven_bauman@outlook.com"
+                }
+            ],
+            "description": "Record metrics in your Laravel application",
+            "support": {
+                "issues": "https://github.com/DirectoryTree/Metrics/issues",
+                "source": "https://github.com/DirectoryTree/Metrics/tree/v1.6.0"
+            },
+            "time": "2025-12-02T03:52:04+00:00"
         },
         {
             "name": "doctrine/dbal",

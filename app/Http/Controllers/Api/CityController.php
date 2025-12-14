@@ -21,6 +21,4 @@ class CityController extends Controller
         $city->loadCount('officeSpaces');
         return new CityResource($city);
     }
-
-
 }
