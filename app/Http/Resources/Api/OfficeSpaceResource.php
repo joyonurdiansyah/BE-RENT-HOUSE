@@ -17,6 +17,8 @@ class OfficeSpaceResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'address' => $this->address, 
+            'about' => $this->about,
             'slug' => $this->slug,
             'duration' => $this->duration,
             'price' => $this->price,
