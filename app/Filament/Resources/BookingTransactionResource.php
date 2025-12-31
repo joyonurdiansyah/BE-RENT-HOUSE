@@ -12,6 +12,10 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Filament\Notifications\Notification;
+
 
 class BookingTransactionResource extends Resource
 {
@@ -77,14 +81,14 @@ class BookingTransactionResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
-                
+
                 Tables\Columns\TextColumn::make('officeSpace.name')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('started_at')
                     ->date()
                     ->sortable(),
-                
+
                 Tables\Columns\IconColumn::make('is_paid')
                     ->boolean()
                     ->trueColor('success')
@@ -93,12 +97,60 @@ class BookingTransactionResource extends Resource
                     ->falseIcon('heroicon-o-x-circle')
                     ->label('Sudah Bayar?')
                     ->sortable(),
-                ])
-            ->filters([
-                //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+
+                Tables\Actions\Action::make('approve')
+                    ->label('Approve')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->visible(fn (BookingTransaction $record) => !$record->is_paid)
+                    ->action(function (BookingTransaction $record) {
+
+                        $record->is_paid = true;
+                        $record->save();
+
+                        Notification::make()
+                            ->title('Booking Approved')
+                            ->success()
+                            ->body('Booking berhasil di-approve dan WA sedang dikirim.')
+                            ->send();
+
+                        $phone = $record->phone_number;
+
+                        if (str_starts_with($phone, '08')) {
+                            $phone = '62' . substr($phone, 1);
+                        }
+
+                        try {
+                            $message  = "✅ *PEMBAYARAN BERHASIL*\n\n";
+                            $message .= "Hi {$record->name},\n\n";
+                            $message .= "Pemesanan Anda telah *LUNAS*.\n\n";
+                            $message .= "🆔 Booking ID: {$record->booking_trx_id}\n";
+                            $message .= "🏢 Kantor: {$record->officeSpace->name}\n";
+                            $message .= "📅 Mulai: {$record->started_at}\n";
+                            $message .= "⏳ Durasi: {$record->duration} hari\n\n";
+                            $message .= "Silakan datang ke lokasi kantor untuk mulai menggunakan ruangan.\n\n";
+                            $message .= "Terima kasih 🙏";
+
+                            $response = Http::withHeaders([
+                                'Authorization' => env('FONNTE_TOKEN'),
+                            ])->post('https://api.fonnte.com/send', [
+                                'target'  => $phone,
+                                'message' => $message,
+                            ]);
+
+                            Log::info('Fonnte Approve Response', [
+                                'booking_id' => $record->id,
+                                'status'     => $response->status(),
+                                'body'       => $response->body(),
+                            ]);
+
+                        } catch (\Exception $e) {
+                            Log::error('Fonnte Approve Exception: ' . $e->getMessage());
+                        }
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
